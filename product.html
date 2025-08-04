@@ -12,7 +12,6 @@
     .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem; }
     .card { border: 1px solid #ccc; padding: 1rem; text-align: center; }
     .card img { max-width: 100%; height: auto; }
-
   </style>
 </head>
 <body>
@@ -35,29 +34,30 @@
   <div class="product-grid" id="productList"></div>
 
   <script>
-    const products = [
-      { name: "Wardrobe", price: 450, img: "https://via.placeholder.com/200", link: "product-detail.html?product=Wardrobe" },
-      { name: "Desk", price: 200, img: "https://via.placeholder.com/200", link: "product-detail.html?product=Desk" },
-      { name: "Side Table", price: 100, img: "https://via.placeholder.com/200", link: "product-detail.html?product=SideTable" },
-      { name: "Bed Frame", price: 300, img: "https://via.placeholder.com/200", link: "product-detail.html?product=BedFrame" },
-      { name: "Storage Drawer", price: 150, img: "https://via.placeholder.com/200", link: "product-detail.html?product=Drawer" }
-    ];
+    let products = [];
+
+    async function fetchProducts() {
+      const res = await fetch("https://yourusername.github.io/yourrepo/data/products.json");
+      products = await res.json();
+      renderProducts(products);
+    }
 
     function renderProducts(data) {
       const list = document.getElementById("productList");
       list.innerHTML = data.map(p => `
         <div class="card">
-          <img src="${p.img}" />
+          <img src="${p.image}" />
           <h3>${p.name}</h3>
           <p>RM ${p.price}</p>
-          <a href="${p.link}"><button>View</button></a>
+          <a href="product-detail.html?product=${encodeURIComponent(p.name)}"><button>View</button></a>
         </div>
       `).join("");
     }
 
     function filterProducts() {
       const query = document.getElementById("search").value.toLowerCase();
-      renderProducts(products.filter(p => p.name.toLowerCase().includes(query)));
+      const filtered = products.filter(p => p.name.toLowerCase().includes(query));
+      renderProducts(filtered);
     }
 
     function sortProducts() {
@@ -68,7 +68,8 @@
       renderProducts(sorted);
     }
 
-    renderProducts(products);
+    fetchProducts();
   </script>
 </body>
 </html>
+
