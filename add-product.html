@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Add Product</title>
+  <style>
+    body { font-family: sans-serif; padding: 2rem; }
+    form { max-width: 600px; margin: auto; }
+    input, textarea, button { width: 100%; margin: 1rem 0; padding: 0.5rem; }
+    button { background: #333; color: white; border: none; }
+  </style>
+</head>
+<body>
+  <h2>Add New Product</h2>
+  <form onsubmit="return saveProduct()">
+    <input type="text" id="name" placeholder="Product Name" required />
+    <input type="number" id="price" placeholder="Base Price (RM)" required />
+    <input type="text" id="image" placeholder="Image URL" required />
+    <textarea id="description" placeholder="Description"></textarea>
+    <input type="text" id="color" placeholder="Color options (comma separated)" />
+    <button type="submit">Save Product</button>
+  </form>
+
+  <script>
+    function saveProduct() {
+      alert("This would normally save to a database or GitHub.");
+      // GitHub saving or storage logic can go here
+      return false;
+    }
+  </script>
+</body>
+</html>
