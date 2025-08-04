@@ -1,1 +1,16 @@
-[]
+[
+  {
+    "name": "Modern Bed Frame",
+    "price": 380,
+    "image": "https://via.placeholder.com/300x300",
+    "description": "Sturdy modern bed frame with wood texture finish.",
+    "color": ["Walnut", "White", "Black"]
+  },
+  {
+    "name": "2-Drawer Side Table",
+    "price": 120,
+    "image": "https://via.placeholder.com/300x300",
+    "description": "Compact side table with two drawers.",
+    "color": ["Oak", "Dark Grey"]
+  }
+]
