@@ -1,17 +1,61 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Cabinet Store - Products</title>
   <style>
-    body { font-family: sans-serif; margin: 0; padding: 1rem; }
-    nav { background: #333; color: white; padding: 1rem; display: flex; justify-content: space-between; }
-    nav a { color: white; text-decoration: none; margin: 0 1rem; }
-
-    input, select { margin: 1rem 0; padding: 0.5rem; width: 100%; max-width: 300px; }
-
-    .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem; }
-    .card { border: 1px solid #ccc; padding: 1rem; text-align: center; }
-    .card img { max-width: 100%; height: auto; }
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 1rem;
+    }
+    nav {
+      background: #333;
+      color: white;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 1rem;
+    }
+    input, select {
+      margin: 1rem 0;
+      padding: 0.5rem;
+      width: 100%;
+      max-width: 300px;
+    }
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .card {
+      border: 1px solid #ccc;
+      padding: 1rem;
+      text-align: center;
+      border-radius: 8px;
+    }
+    .card img {
+      max-width: 100%;
+      height: auto;
+    }
+    .card button {
+      padding: 0.5rem 1rem;
+      background-color: #333;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .card button:hover {
+      background-color: #555;
+    }
   </style>
 </head>
 <body>
@@ -24,52 +68,65 @@
     </div>
   </nav>
 
-  <input type="text" id="search" placeholder="Search product..." onkeyup="filterProducts()">
-  <select id="sort" onchange="sortProducts()">
+  <input type="text" id="search" placeholder="Search product..." oninput="applyFilters()" />
+  <select id="sort" onchange="applyFilters()">
     <option value="">Sort By</option>
     <option value="asc">Price Low to High</option>
     <option value="desc">Price High to Low</option>
   </select>
 
-  <div class="product-grid" id="productList"></div>
+  <div class="product-grid" id="productList">Loading products...</div>
 
   <script>
     let products = [];
 
     async function fetchProducts() {
-      const res = await fetch("https://pejo619.github.io/test-3/data/products.json");
-      products = await res.json();
-      renderProducts(products);
+      try {
+        const res = await fetch("https://pejo619.github.io/test-3/data/products.json");
+        products = await res.json();
+        applyFilters();
+      } catch (err) {
+        document.getElementById("productList").innerHTML = "Failed to load products.";
+        console.error("Fetch error:", err);
+      }
+    }
+
+    function applyFilters() {
+      const searchValue = document.getElementById("search").value.toLowerCase();
+      const sortValue = document.getElementById("sort").value;
+
+      let filtered = products.filter(p =>
+        p.name.toLowerCase().includes(searchValue)
+      );
+
+      if (sortValue === "asc") {
+        filtered.sort((a, b) => a.price - b.price);
+      } else if (sortValue === "desc") {
+        filtered.sort((a, b) => b.price - a.price);
+      }
+
+      renderProducts(filtered);
     }
 
     function renderProducts(data) {
       const list = document.getElementById("productList");
+      if (data.length === 0) {
+        list.innerHTML = "<p>No products found.</p>";
+        return;
+      }
       list.innerHTML = data.map(p => `
         <div class="card">
-          <img src="${p.image}" />
+          <img src="${p.image}" alt="${p.name}" />
           <h3>${p.name}</h3>
-          <p>RM ${p.price}</p>
-          <a href="product-detail.html?product=${encodeURIComponent(p.name)}"><button>View</button></a>
+          <p>RM ${p.price.toFixed(2)}</p>
+          <a href="product-detail.html?product=${encodeURIComponent(p.name)}">
+            <button>View</button>
+          </a>
         </div>
       `).join("");
-    }
-
-    function filterProducts() {
-      const query = document.getElementById("search").value.toLowerCase();
-      const filtered = products.filter(p => p.name.toLowerCase().includes(query));
-      renderProducts(filtered);
-    }
-
-    function sortProducts() {
-      const val = document.getElementById("sort").value;
-      let sorted = [...products];
-      if (val === "asc") sorted.sort((a, b) => a.price - b.price);
-      if (val === "desc") sorted.sort((a, b) => b.price - a.price);
-      renderProducts(sorted);
     }
 
     fetchProducts();
   </script>
 </body>
 </html>
-
