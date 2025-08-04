@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Cabinet Store - Products</title>
+  <style>
+    body { font-family: sans-serif; margin: 0; padding: 1rem; }
+    nav { background: #333; color: white; padding: 1rem; display: flex; justify-content: space-between; }
+    nav a { color: white; text-decoration: none; margin: 0 1rem; }
+
+    input, select { margin: 1rem 0; padding: 0.5rem; width: 100%; max-width: 300px; }
+
+    .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem; }
+    .card { border: 1px solid #ccc; padding: 1rem; text-align: center; }
+    .card img { max-width: 100%; height: auto; }
+
+  </style>
+</head>
+<body>
+  <nav>
+    <div><strong>Cabinet Store</strong></div>
+    <div>
+      <a href="index.html">Home</a>
+      <a href="product.html">Product</a>
+      <a href="contact.html">Contact Us</a>
+    </div>
+  </nav>
+
+  <input type="text" id="search" placeholder="Search product..." onkeyup="filterProducts()">
+  <select id="sort" onchange="sortProducts()">
+    <option value="">Sort By</option>
+    <option value="asc">Price Low to High</option>
+    <option value="desc">Price High to Low</option>
+  </select>
+
+  <div class="product-grid" id="productList"></div>
+
+  <script>
+    const products = [
+      { name: "Wardrobe", price: 450, img: "https://via.placeholder.com/200", link: "product-detail.html?product=Wardrobe" },
+      { name: "Desk", price: 200, img: "https://via.placeholder.com/200", link: "product-detail.html?product=Desk" },
+      { name: "Side Table", price: 100, img: "https://via.placeholder.com/200", link: "product-detail.html?product=SideTable" },
+      { name: "Bed Frame", price: 300, img: "https://via.placeholder.com/200", link: "product-detail.html?product=BedFrame" },
+      { name: "Storage Drawer", price: 150, img: "https://via.placeholder.com/200", link: "product-detail.html?product=Drawer" }
+    ];
+
+    function renderProducts(data) {
+      const list = document.getElementById("productList");
+      list.innerHTML = data.map(p => `
+        <div class="card">
+          <img src="${p.img}" />
+          <h3>${p.name}</h3>
+          <p>RM ${p.price}</p>
+          <a href="${p.link}"><button>View</button></a>
+        </div>
+      `).join("");
+    }
+
+    function filterProducts() {
+      const query = document.getElementById("search").value.toLowerCase();
+      renderProducts(products.filter(p => p.name.toLowerCase().includes(query)));
+    }
+
+    function sortProducts() {
+      const val = document.getElementById("sort").value;
+      let sorted = [...products];
+      if (val === "asc") sorted.sort((a, b) => a.price - b.price);
+      if (val === "desc") sorted.sort((a, b) => b.price - a.price);
+      renderProducts(sorted);
+    }
+
+    renderProducts(products);
+  </script>
+</body>
+</html>
