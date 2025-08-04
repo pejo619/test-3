@@ -1,0 +1,35 @@
+name: Add Product to products.json
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  add_product:
+    if: contains(github.event.issue.labels.*.name, 'new-product')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Parse issue & update products.json
+        run: |
+          echo "${{ github.event.issue.body }}" > new-product.json
+          node <<EOF
+          const fs = require('fs');
+          const newProduct = JSON.parse(fs.readFileSync('new-product.json'));
+          const path = 'data/products.json';
+          const products = JSON.parse(fs.readFileSync(path));
+          products.push(newProduct);
+          fs.writeFileSync(path, JSON.stringify(products, null, 2));
+          EOF
+
+      - name: Commit and push changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Add new product from issue #${{ github.event.issue.number }}"
