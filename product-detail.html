@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Cabinet Store - Product</title>
+  <style>
+    body { font-family: sans-serif; padding: 2rem; }
+    .wrapper { max-width: 600px; margin: auto; text-align: center; }
+    img { max-width: 100%; }
+    select, input, button { margin: 1rem 0; padding: 0.5rem; width: 100%; }
+    button { background: #25D366; color: white; border: none; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <h2 id="productName">Product Name</h2>
+    <img src="https://via.placeholder.com/400" />
+    <div>
+      <label>Color:</label>
+      <select id="color" onchange="updatePrice()">
+        <option value="White">White</option>
+        <option value="Black">Black</option>
+      </select>
+    </div>
+    <div>
+      <label>Size:</label>
+      <select id="size" onchange="updatePrice()">
+        <option value="S">Small</option>
+        <option value="M">Medium</option>
+        <option value="L">Large</option>
+      </select>
+    </div>
+    <h3 id="price">RM 300</h3>
+    <a id="buyLink" href="#" target="_blank"><button>Buy via WhatsApp</button></a>
+  </div>
+
+  <script>
+    let basePrice = 300;
+
+    function updatePrice() {
+      let color = document.getElementById('color').value;
+      let size = document.getElementById('size').value;
+      let finalPrice = basePrice;
+
+      if (size === 'M') finalPrice += 50;
+      if (size === 'L') finalPrice += 100;
+
+      document.getElementById('price').innerText = "RM " + finalPrice;
+      let msg = `Saya nak beli ${document.getElementById('productName').innerText}\nColor: ${color}\nSize: ${size}\nPrice: RM ${finalPrice}`;
+      document.getElementById('buyLink').href = `https://wa.me/60123456789?text=${encodeURIComponent(msg)}`;
+    }
+
+    window.onload = () => {
+      const params = new URLSearchParams(window.location.search);
+      const product = params.get("product") || "Product Name";
+      document.getElementById("productName").innerText = product;
+      updatePrice();
+    }
+  </script>
+</body>
+</html>
